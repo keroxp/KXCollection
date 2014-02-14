@@ -1,35 +1,35 @@
 //
-//  KXCollectionTests.m
-//  KXCollectionTests
+//  FANCollectionTests.m
+//  fan
 //
 //  Created by 桜井雄介 on 2014/02/14.
-//  Copyright (c) 2014年 Yusuke Sakurai. All rights reserved.
+//  Copyright (c) 2014年 LoiLo Inc. All rights reserved.
 //
 
 #import <XCTest/XCTest.h>
-#import "KXCollection.h"
+#import "FANCollection.h"
 
-@interface KXCollectionTests : XCTestCase
+@interface FANCollectionTests : XCTestCase
 
 @end
 
-@implementation KXCollectionTests
+@implementation FANCollectionTests
 
 - (void)setUp
 {
     [super setUp];
-    // Put setup code here. This method is called before the invocation of each test method in the class.
+    // Put setup code here; it will be run once, before the first test case.
 }
 
 - (void)tearDown
 {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
+    // Put teardown code here; it will be run once, after the last test case.
     [super tearDown];
 }
 
 - (void)testExample
 {
-    KXCollection *c = [[KXCollection alloc] init];
+    FANCollection *c = [[FANCollection alloc] init];
     XCTAssert([c conformsToProtocol:@protocol(NSOrderedSetAspect)], );
     XCTAssert([c isKindOfClass:[NSObject class]], );
 }
@@ -37,8 +37,8 @@
 
 - (void)testClass
 {
-    KXCollection *c = [KXCollection collectionWithClass:[NSString class]];
-    XCTAssert(c.clazz == [NSString class], );
+    FANCollection *c = [FANCollection collectionWithClass:[NSString class]];
+    XCTAssert(c.class == [NSString class], );
     XCTAssertNoThrow([c addObject:@"str1"], @"文字列は追加できる");
     XCTAssertNoThrow([c addObject:[NSMutableString stringWithString:@"mutablestr1"]], @"サブクラスもOK");
     XCTAssertThrows([c addObject:@[]], @"NSarrayは追加できない");
@@ -46,11 +46,10 @@
 
 - (void)testClassWithModels
 {
-    KXCollection *c = [KXCollection collectionWithClass:[NSString class] models:@[@"a",@"b",@"c",[NSMutableString stringWithFormat:@"d"]]];
+    FANCollection *c = [FANCollection collectionWithClass:[NSString class] models:@[@"a",@"b",@"c",[NSMutableString stringWithFormat:@"d"]]];
     XCTAssert(c.count == 4, );
     XCTAssert(![c isEqual:[c orderedSetRepresentation]], @"repは違うオブジェクト");
     XCTAssert([c isEqualToOrderedSet:[c orderedSetRepresentation]], @"でも中身は同じ");
 }
-
 
 @end

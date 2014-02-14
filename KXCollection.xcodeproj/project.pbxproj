@@ -19,6 +19,7 @@
 		A62FE78818AE0A3100F12E3A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A62FE77018AE0A3100F12E3A /* UIKit.framework */; };
 		A62FE79018AE0A3100F12E3A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A62FE78E18AE0A3100F12E3A /* InfoPlist.strings */; };
 		A62FE79218AE0A3100F12E3A /* KXCollectionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A62FE79118AE0A3100F12E3A /* KXCollectionTests.m */; };
+		A62FE79F18AE0A6800F12E3A /* KXCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = A62FE79D18AE0A6800F12E3A /* KXCollection.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +49,9 @@
 		A62FE78D18AE0A3100F12E3A /* KXCollectionTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "KXCollectionTests-Info.plist"; sourceTree = "<group>"; };
 		A62FE78F18AE0A3100F12E3A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		A62FE79118AE0A3100F12E3A /* KXCollectionTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KXCollectionTests.m; sourceTree = "<group>"; };
+		A62FE79C18AE0A6800F12E3A /* KXCollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KXCollection.h; sourceTree = "<group>"; };
+		A62FE79D18AE0A6800F12E3A /* KXCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KXCollection.m; sourceTree = "<group>"; };
+		A62FE79E18AE0A6800F12E3A /* NSOrderedSetAspect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSOrderedSetAspect.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,6 +81,7 @@
 		A62FE76018AE0A3100F12E3A = {
 			isa = PBXGroup;
 			children = (
+				A62FE79B18AE0A6800F12E3A /* Classes */,
 				A62FE77218AE0A3100F12E3A /* KXCollection */,
 				A62FE78B18AE0A3100F12E3A /* KXCollectionTests */,
 				A62FE76B18AE0A3100F12E3A /* Frameworks */,
@@ -142,6 +147,16 @@
 				A62FE78E18AE0A3100F12E3A /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		A62FE79B18AE0A6800F12E3A /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				A62FE79E18AE0A6800F12E3A /* NSOrderedSetAspect.h */,
+				A62FE79C18AE0A6800F12E3A /* KXCollection.h */,
+				A62FE79D18AE0A6800F12E3A /* KXCollection.m */,
+			);
+			path = Classes;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -241,6 +256,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A62FE77918AE0A3100F12E3A /* main.m in Sources */,
+				A62FE79F18AE0A6800F12E3A /* KXCollection.m in Sources */,
 				A62FE77D18AE0A3100F12E3A /* KXAppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
