@@ -52,5 +52,12 @@
     XCTAssert([c isEqualToOrderedSet:[c orderedSetRepresentation]], @"でも中身は同じ");
 }
 
+- (void)testSortCall
+{
+    KXCollection *c = [KXCollection collectionWithClass:[NSString class] models:@[@"a",@"b",@"c",[NSMutableString stringWithFormat:@"d"]]];
+    [c sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+        return NSOrderedDescending;
+    }];
+}
 
 @end

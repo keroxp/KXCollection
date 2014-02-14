@@ -14,7 +14,7 @@ NSString *const KXCollectionErrorDomain = @"me.keroxp.app.KX:KXCollectionErrorDo
 NSString *const KXCollectionInvalidModelInsertionException = @"me.keroxp.app.KX:KXCollectionInvalidModelInsertionException";
 static const char * KXCollectionInsertionValidationKey = "me.keroxp.app.KX:KXCollectionInsertionValidationKey";
 
-@implementation NSMutableOrderedSet (Validation)
+@implementation NSMutableOrderedSet (Swizzling)
 
 - (void)validateInertion:(id)object
 {
@@ -40,12 +40,25 @@ static const char * KXCollectionInsertionValidationKey = "me.keroxp.app.KX:KXCol
     [self kx_replaceObjectAtIndex:idx withObject:object];
 }
 
+- (void)kx_removeObjectAtIndex:(NSUInteger)idx
+{
+    [self kx_removeObjectAtIndex:idx];
+}
+
+- (void)kx_moveObjectsAtIndexes:(NSIndexSet *)indexes toIndex:(NSUInteger)idx
+{
+    [self kx_moveObjectsAtIndexes:indexes toIndex:idx];
+}
+
 @end
 
 @interface KXCollection ()
 {
     NSMutableOrderedSet *_actualData;
+    NSHashTable *_observers;
 }
+
+- (void)validateInsertion:(id)object;
 
 @end
 
@@ -65,8 +78,17 @@ static const char * KXCollectionInsertionValidationKey = "me.keroxp.app.KX:KXCol
 {
     self = [super init];
     _actualData = [NSMutableOrderedSet new];
+    _observers = [NSHashTable weakObjectsHashTable];
+    // _actualDataにselfの弱参照を持たせる
+    objc_setAssociatedObject(_actualData, KXCollectionInsertionValidationKey , self, OBJC_ASSOCIATION_ASSIGN);
     // 黒魔術
-    [self darkMagic];
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        [self swizzleMethods:@selector(insertObject:atIndex:) to:@selector(kx_insertObject:atIndex:)];
+        [self swizzleMethods:@selector(replaceObjectAtIndex:withObject:) to:@selector(kx_replaceObjectAtIndex:withObject:)];
+        [self swizzleMethods:@selector(moveObjectsAtIndexes:toIndex:) to:@selector(kx_moveObjectsAtIndexes:toIndex:)];
+        [self swizzleMethods:@selector(removeObjectAtIndex:) to:@selector(kx_removeObjectAtIndex:)];
+    });
     return self ?: nil;
 }
 
@@ -95,6 +117,35 @@ static const char * KXCollectionInsertionValidationKey = "me.keroxp.app.KX:KXCol
     return [NSOrderedSet orderedSetWithOrderedSet:_actualData];
 }
 
+- (NSArray *)observers
+{
+    return [_observers allObjects];
+}
+
+#pragma mark - Observer
+
+- (void)addObserver:(id<KXCollectionObserving>)observer
+{
+    [_observers addObject:observer];
+}
+
+- (void)removeObserver:(id<KXCollectionObserving>)observer
+{
+    [_observers removeObject:observer];
+    // 弱参照の保持の挙動が気になるので定期的にhash tableをリニューアルする
+    NSHashTable *renew = [NSHashTable weakObjectsHashTable];
+    for (id obj in _observers) {
+        [renew addObject:obj];
+    }
+    _observers = renew;
+}
+
+- (void)removeAllObservers
+{
+    [_observers removeAllObjects];
+    _observers = [NSHashTable weakObjectsHashTable];
+}
+
 #pragma mark - Method Forwarding
 
 - (void)forwardInvocation:(NSInvocation *)anInvocation
@@ -115,23 +166,11 @@ static const char * KXCollectionInsertionValidationKey = "me.keroxp.app.KX:KXCol
 
 #pragma mark - NSMutableOrderedSet
 
-- (void)darkMagic
+- (void)swizzleMethods:(SEL)from to:(SEL)to
 {
-    /*
-     自身のクラスが保持すべきモデルオブジェクト以外の挿入を防ぐために
-     NSMutableOrderedSetのプリミティブアクセッサである
-     insertObject:atIndex, replaceObject:atIndex:
-     にvalidation処理を差し込む
-    */
-    // selfに弱参照を持たせる
-    objc_setAssociatedObject(_actualData, KXCollectionInsertionValidationKey , self, OBJC_ASSOCIATION_ASSIGN);
-    // カテゴリに追加したwrap methodに入れ替える
-    Method insert = class_getInstanceMethod([_actualData class], @selector(insertObject:atIndex:));
-    Method _insert = class_getInstanceMethod([_actualData class], @selector(kx_insertObject:atIndex:));
-    Method replace = class_getInstanceMethod([_actualData class], @selector(replaceObjectAtIndex:withObject:));
-    Method _replace = class_getInstanceMethod([_actualData class], @selector(kx_replaceObjectAtIndex:withObject:));
-    method_exchangeImplementations(insert, _insert);
-    method_exchangeImplementations(replace, _replace);
+    Method from_m = class_getInstanceMethod([_actualData class], from);
+    Method to_m = class_getInstanceMethod([_actualData class], to);
+    method_exchangeImplementations(from_m, to_m);
 }
 
 - (void)validateInsertion:(id)object

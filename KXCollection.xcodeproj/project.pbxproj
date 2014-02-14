@@ -458,6 +458,7 @@
 				A62FE79718AE0A3100F12E3A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		A62FE79818AE0A3100F12E3A /* Build configuration list for PBXNativeTarget "KXCollectionTests" */ = {
 			isa = XCConfigurationList;
@@ -466,6 +467,7 @@
 				A62FE79A18AE0A3100F12E3A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
