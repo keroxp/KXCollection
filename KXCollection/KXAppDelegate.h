@@ -2,7 +2,7 @@
 //  KXAppDelegate.h
 //  KXCollection
 //
-//  Created by 桜井雄介 on 2014/02/14.
+//  Created by Yusuke Sakurai on 2014/02/14.
 //  Copyright (c) 2014年 Yusuke Sakurai. All rights reserved.
 //
 
