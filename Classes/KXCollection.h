@@ -12,6 +12,13 @@
 extern NSString *const KXCollectionErrorDomain;
 extern NSString *const KXCollectionInvalidModelInsertionException;
 
+typedef enum
+{
+    KXCollectionChangeInsert = 1,
+    KXCollectionChangeDelete,
+    KXCollectionChangeReplace
+}KXCollectionChange;
+
 /*
  NSMutableOrderdSetと同じインターフェースを持ち、
  特定のクラスのオブジェクトだけを格納するコレクションクラス
@@ -36,9 +43,18 @@ extern NSString *const KXCollectionInvalidModelInsertionException;
 - (void)removeObserver:(id <KXCollectionObserving>)observer;
 - (void)removeAllObservers;
 
+
 // データの実体であるNSMutableOrderedSetを返す
 // 新規にallocateするのでオブジェクトとしての等価性はない
 - (NSOrderedSet*)orderedSetRepresentation;
+
+@end
+
+@interface KXCollection (Notification)
+
+- (void)notifyChangeOfObjectAtIndex:(NSUInteger)index forChange:(KXCollectionChange)change;
+- (void)notifyMoveOfObjectsAtIndexes:(NSIndexSet*)indexses toIndex:(NSUInteger)toIndex;
+- (void)validateInsertionOrRepacementOfObject:(id)object;
 
 @end
 
@@ -53,16 +69,9 @@ extern NSString *const KXCollectionInvalidModelInsertionException;
 
 @protocol KXCollectionObserving <NSObject>
 
-- (void)collectionWillChangeContent:(KXCollection*)collection;
-- (void)collection:(KXCollection*)collection
-   didChangeObject:(id)object
-           atIndex:(NSUInteger)index
-         forChange:(NSKeyValueChange)change;
-- (void)collection:(KXCollection *)collection
-    didMoveObjects:(NSOrderedSet*)objects
-       fromIndexes:(NSIndexSet*)fromIndexes
-         toIndexes:(NSIndexSet*)toIndexes;
+@optional
+- (void)collection:(KXCollection*)collection didChangeObjectAtIndex:(NSUInteger)index forChange:(KXCollectionChange)change;
+- (void)collection:(KXCollection *)collection didMoveObjectsFromIndexes:(NSIndexSet*)fromIndexes toIndex:(NSUInteger)toIndex;
 - (void)collection:(KXCollection*)collection didChangeSortWithSortDescriptros:(NSArray*)sortDescriptors;
-- (void)collectioDidChangeContent:(KXCollection*)collection;
 
 @end

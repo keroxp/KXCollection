@@ -10,6 +10,7 @@
 
 /*
  * NSOrderedSetをアスペクト化したプロトコル
+ * NSOrderedSet.hからコピペ
  */
 
 

@@ -52,6 +52,14 @@
     XCTAssert([c isEqualToOrderedSet:[c orderedSetRepresentation]], @"でも中身は同じ");
 }
 
+- (void)testEnumeration
+{
+    KXCollection *c = [KXCollection collectionWithClass:[NSString class] models:@[@"a",@"b",@"c",[NSMutableString stringWithFormat:@"d"]]];
+    for (id str in c) {
+        XCTAssert([str isKindOfClass:[NSString class]], @"走査できる" );
+    }
+}
+
 - (void)testSortCall
 {
     KXCollection *c = [KXCollection collectionWithClass:[NSString class] models:@[@"a",@"b",@"c",[NSMutableString stringWithFormat:@"d"]]];

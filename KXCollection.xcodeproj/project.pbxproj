@@ -20,6 +20,8 @@
 		A62FE79018AE0A3100F12E3A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A62FE78E18AE0A3100F12E3A /* InfoPlist.strings */; };
 		A62FE79218AE0A3100F12E3A /* KXCollectionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A62FE79118AE0A3100F12E3A /* KXCollectionTests.m */; };
 		A62FE79F18AE0A6800F12E3A /* KXCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = A62FE79D18AE0A6800F12E3A /* KXCollection.m */; };
+		A6D1761518AEFF9200AB11AF /* KXCollectionObservingTests.m in Sources */ = {isa = PBXBuildFile; fileRef = A6D1761418AEFF9200AB11AF /* KXCollectionObservingTests.m */; };
+		A6D1761818AF010E00AB11AF /* KXCollectionObserverMock.m in Sources */ = {isa = PBXBuildFile; fileRef = A6D1761718AF010E00AB11AF /* KXCollectionObserverMock.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +54,9 @@
 		A62FE79C18AE0A6800F12E3A /* KXCollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KXCollection.h; sourceTree = "<group>"; };
 		A62FE79D18AE0A6800F12E3A /* KXCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KXCollection.m; sourceTree = "<group>"; };
 		A62FE79E18AE0A6800F12E3A /* NSOrderedSetAspect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSOrderedSetAspect.h; sourceTree = "<group>"; };
+		A6D1761418AEFF9200AB11AF /* KXCollectionObservingTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KXCollectionObservingTests.m; sourceTree = "<group>"; };
+		A6D1761618AF010E00AB11AF /* KXCollectionObserverMock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KXCollectionObserverMock.h; sourceTree = "<group>"; };
+		A6D1761718AF010E00AB11AF /* KXCollectionObserverMock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KXCollectionObserverMock.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -135,6 +140,9 @@
 			isa = PBXGroup;
 			children = (
 				A62FE79118AE0A3100F12E3A /* KXCollectionTests.m */,
+				A6D1761418AEFF9200AB11AF /* KXCollectionObservingTests.m */,
+				A6D1761618AF010E00AB11AF /* KXCollectionObserverMock.h */,
+				A6D1761718AF010E00AB11AF /* KXCollectionObserverMock.m */,
 				A62FE78C18AE0A3100F12E3A /* Supporting Files */,
 			);
 			path = KXCollectionTests;
@@ -265,6 +273,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A6D1761818AF010E00AB11AF /* KXCollectionObserverMock.m in Sources */,
+				A6D1761518AEFF9200AB11AF /* KXCollectionObservingTests.m in Sources */,
 				A62FE79218AE0A3100F12E3A /* KXCollectionTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

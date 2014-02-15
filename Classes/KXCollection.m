@@ -16,38 +16,35 @@ static const char * KXCollectionInsertionValidationKey = "me.keroxp.app.KX:KXCol
 
 @implementation NSMutableOrderedSet (Swizzling)
 
-- (void)validateInertion:(id)object
+- (KXCollection*)owner
 {
-    // owner -> KXCollection
-    id owner = objc_getAssociatedObject(self, KXCollectionInsertionValidationKey);
-    if (owner) {
-        SEL sel = NSSelectorFromString(@"validateInsertion:");
-        objc_msgSend(owner, sel, object);
-    }
+    return objc_getAssociatedObject(self, KXCollectionInsertionValidationKey);
 }
 
 - (void)kx_insertObject:(id)object atIndex:(NSUInteger)idx
 {
-    [self validateInertion:object];
-    // call original
+    [[self owner] validateInsertionOrRepacementOfObject:object];
     [self kx_insertObject:object atIndex:idx];
+    [[self owner] notifyChangeOfObjectAtIndex:idx forChange:KXCollectionChangeInsert];
 }
 
 - (void)kx_replaceObjectAtIndex:(NSUInteger)idx withObject:(id)object
 {
-    [self validateInertion:object];
-    // call oriignal
+    [[self owner] validateInsertionOrRepacementOfObject:object];
     [self kx_replaceObjectAtIndex:idx withObject:object];
+    [[self owner] notifyChangeOfObjectAtIndex:idx forChange:KXCollectionChangeReplace];
 }
 
 - (void)kx_removeObjectAtIndex:(NSUInteger)idx
 {
     [self kx_removeObjectAtIndex:idx];
+    [[self owner] notifyChangeOfObjectAtIndex:idx forChange:KXCollectionChangeDelete];
 }
 
 - (void)kx_moveObjectsAtIndexes:(NSIndexSet *)indexes toIndex:(NSUInteger)idx
 {
     [self kx_moveObjectsAtIndexes:indexes toIndex:idx];
+    [[self owner] notifyMoveOfObjectsAtIndexes:indexes toIndex:idx];
 }
 
 @end
@@ -57,8 +54,6 @@ static const char * KXCollectionInsertionValidationKey = "me.keroxp.app.KX:KXCol
     NSMutableOrderedSet *_actualData;
     NSHashTable *_observers;
 }
-
-- (void)validateInsertion:(id)object;
 
 @end
 
@@ -105,7 +100,7 @@ static const char * KXCollectionInsertionValidationKey = "me.keroxp.app.KX:KXCol
     if (models) {
         // 与えられたモデルがすべて対象のクラスを継承しているかをチェックする
         for (id obj in models) {
-            [self validateInsertion:obj];
+            [self validateInsertionOrRepacementOfObject:obj];
         }
         [self addObjectsFromArray:models];
     }
@@ -120,6 +115,11 @@ static const char * KXCollectionInsertionValidationKey = "me.keroxp.app.KX:KXCol
 - (NSArray *)observers
 {
     return [_observers allObjects];
+}
+
+- (NSString *)description
+{
+    return [_actualData description];
 }
 
 #pragma mark - Observer
@@ -145,6 +145,25 @@ static const char * KXCollectionInsertionValidationKey = "me.keroxp.app.KX:KXCol
     [_observers removeAllObjects];
     _observers = [NSHashTable weakObjectsHashTable];
 }
+
+- (void)notifyChangeOfObjectAtIndex:(NSUInteger)index forChange:(KXCollectionChange)change
+{
+    for (id<KXCollectionObserving> obs in _observers) {
+        if ([obs respondsToSelector:@selector(collection:didChangeObjectAtIndex:forChange:)]) {
+            [obs collection:self didChangeObjectAtIndex:index forChange:change];
+        }
+    }
+}
+
+- (void)notifyMoveOfObjectsAtIndexes:(NSIndexSet *)indexses toIndex:(NSUInteger)toIndex
+{
+    for (id<KXCollectionObserving> obs in _observers) {
+        if ([obs respondsToSelector:@selector(collection:didMoveObjectsFromIndexes:toIndex:)]) {
+            [obs collection:self didMoveObjectsFromIndexes:indexses toIndex:toIndex];
+        }
+    }
+}
+
 
 #pragma mark - Method Forwarding
 
@@ -173,7 +192,7 @@ static const char * KXCollectionInsertionValidationKey = "me.keroxp.app.KX:KXCol
     method_exchangeImplementations(from_m, to_m);
 }
 
-- (void)validateInsertion:(id)object
+- (void)validateInsertionOrRepacementOfObject:(id)object
 {
     // 登録されいるクラスでないオブジェクトの挿入を防ぐ
     if (![object isKindOfClass:_clazz]) {
