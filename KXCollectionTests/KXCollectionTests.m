@@ -32,6 +32,15 @@
     KXCollection *c = [[KXCollection alloc] init];
     XCTAssert([c conformsToProtocol:@protocol(NSOrderedSetAspect)], );
     XCTAssert([c isKindOfClass:[NSObject class]], );
+    XCTAssert(![c isKindOfClass:[NSOrderedSet class]], @"NSOrderdSetじゃない");
+}
+
+- (void)testBehavior
+{
+    KXCollection *c = [[KXCollection alloc] init];
+    XCTAssertNoThrow([c addObject:@"hoge"], @"NSMutableOrderedSetの振る舞い");
+    XCTAssert(c.count == 1, @"NSMutableOrderedSetの振る舞い");
+    XCTAssert([[c objectAtIndex:0] isEqualToString:@"hoge"], @"NSMutableOrderedSetの振る舞い");
 }
 
 

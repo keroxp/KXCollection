@@ -77,11 +77,11 @@
 
 - (void)collection:(KXCollection *)collection didChangeObjectAtIndex:(NSUInteger)index forChange:(KXCollectionChange)change
 {
-    NSLog(@"%@, index : %ul",collection, index);
+    NSLog(@"%@, index : %ul",collection, index); // 呼ばれる
 }
 - (void)collection:(KXCollection *)collection didMoveObjectsFromIndexes:(NSIndexSet *)fromIndexes toIndex:(NSUInteger)toIndex
 {
-
+    NSLog(@"%@, index : %ul",collection, toIndex); // 呼ばれる
 }
 
 @end
